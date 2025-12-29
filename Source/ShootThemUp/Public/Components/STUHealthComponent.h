@@ -6,8 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "STUHealthComponent.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FEventOnDeath)
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float)
+DECLARE_MULTICAST_DELEGATE(FEventOnDeath);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent
@@ -18,16 +18,14 @@ public:
 	// Sets default values for this component's properties
 	USTUHealthComponent();
 
-	float GetHealth() const
-	{
-		return Health;
-	}
+	FEventOnDeath EventOnDeath;
+	FOnHealthChanged OnHealthChanged;
+	
+	float GetHealth() const { return Health; }
 
 	UFUNCTION(BlueprintCallable)
 	bool IsDead() const { return FMath::IsNearlyZero(Health); }
-
-	FEventOnDeath EventOnDeath;
-	FOnHealthChanged OnHealthChanged;
+		
 
 protected:
 	// Called when the game starts
