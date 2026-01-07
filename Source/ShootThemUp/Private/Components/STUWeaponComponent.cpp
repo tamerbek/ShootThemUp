@@ -14,12 +14,6 @@ USTUWeaponComponent::USTUWeaponComponent()
 
 }
 
-void USTUWeaponComponent::WeaponFire()
-{
-
-}
-
-
 // Called when the game starts
 void USTUWeaponComponent::BeginPlay()
 {
@@ -35,11 +29,17 @@ void USTUWeaponComponent::SpawnWeapon()
 	ACharacter* Character = Cast<ACharacter>(GetOwner());
 	if (!Character) return;
 
-	const auto Weapon = GetWorld()->SpawnActor<ASTUBaseWeapon>(WeaponClass);
-	if (!Weapon) return;
+	CurrentWeapon = GetWorld()->SpawnActor<ASTUBaseWeapon>(WeaponClass);
+	if (!CurrentWeapon) return;
 	{
 		
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
-		Weapon->AttachToComponent(Character->GetMesh(), AttachmentRules, WeaponAttachSocket);
+		CurrentWeapon->AttachToComponent(Character->GetMesh(), AttachmentRules, WeaponAttachSocket);
 	}
+}
+
+void USTUWeaponComponent::WeaponFire()
+{
+	if(!CurrentWeapon) return;
+	CurrentWeapon->Fire();
 }

@@ -27,9 +27,11 @@ protected:
 	TSubclassOf<ASTUBaseWeapon> WeaponClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	FName WeaponAttachSocket = "WeaponSocket";
+	FName WeaponAttachSocket = "RifleSocket";
 
 private:
+	UPROPERTY()
+	ASTUBaseWeapon* CurrentWeapon = nullptr;
 
 	void SpawnWeapon();
 };

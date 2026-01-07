@@ -10,6 +10,7 @@
 #include "Components/TextRenderComponent.h"
 #include "Engine/DamageEvents.h"
 #include "GameFramework/Controller.h"
+#include "Components/STUWeaponComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
 
@@ -32,6 +33,8 @@ ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer& ObjInit) : Super(
 	HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
 	HealthTextComponent->SetupAttachment(GetRootComponent());
 	HealthTextComponent->SetOwnerNoSee(true);
+
+	WeaponComponent = CreateDefaultSubobject<USTUWeaponComponent>("WeaponComponent");
 
 }
 
@@ -58,6 +61,8 @@ void ASTUBaseCharacter::Tick(float DeltaTime)
 void ASTUBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	check(PlayerInputComponent);
+	check(WeaponComponent);
 	
 	PlayerInputComponent->BindAxis("PlayerMoveForward", this, &ASTUBaseCharacter::PlayerMoveForward);
 	PlayerInputComponent->BindAxis("PlayerMoveRight", this, &ASTUBaseCharacter::PlayerMoveRight);
@@ -66,7 +71,7 @@ void ASTUBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASTUBaseCharacter::Jump);
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ASTUBaseCharacter::OnStartSprint);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ASTUBaseCharacter::OnStopSprint);
-
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &USTUWeaponComponent::WeaponFire);
 }
 
 float ASTUBaseCharacter::GetMovementDirection() const
