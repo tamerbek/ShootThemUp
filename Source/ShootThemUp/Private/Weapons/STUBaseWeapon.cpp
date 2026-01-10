@@ -7,6 +7,7 @@
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
+#include "Engine/DamageEvents.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseWeaponLog, All, All);
 
@@ -38,10 +39,7 @@ void ASTUBaseWeapon::MakeShot()
 {
 	if (!GetWorld()) return;
 
-	const auto Player = Cast<ACharacter>(GetOwner());
-	if(!Player) return;
-
-	const auto Controller = Player->GetController<APlayerController>();
+	const auto Controller = GetPlayerController();
 	if (!Controller) return;
 
 	FVector ViewLocation;
@@ -61,6 +59,7 @@ void ASTUBaseWeapon::MakeShot()
 
 	if (HitResult.bBlockingHit)
 	{
+		MakeDamage(HitResult);
 		DrawDebugLine(GetWorld(), SocketTransform.GetLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
 		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 10.0f, FColor::Red, false, 5.0f);
 		UE_LOG(BaseWeaponLog, Display, TEXT("Hit Bone: %s"), *HitResult.BoneName.ToString());
@@ -68,4 +67,20 @@ void ASTUBaseWeapon::MakeShot()
 	else {
 		DrawDebugLine(GetWorld(), SocketTransform.GetLocation(), TraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
 	}
+}
+
+APlayerController* ASTUBaseWeapon::GetPlayerController() const
+{
+	const auto Player = Cast<ACharacter>(GetOwner());
+	if (!Player) return nullptr;
+
+	return Player->GetController<APlayerController>();
+}
+
+void ASTUBaseWeapon::MakeDamage(const FHitResult& HitResult)
+{
+	const auto DamagedActor = HitResult.GetActor();
+	if (!DamagedActor) return;
+
+	DamagedActor->TakeDamage(DamageAmount, FDamageEvent(), GetPlayerController(), this);
 }

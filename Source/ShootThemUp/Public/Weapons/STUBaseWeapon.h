@@ -29,11 +29,16 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	float ShootTraceMaxDistance = 10000.0f;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float DamageAmount = 10.0f;
+
 	void MakeShot();
+
+	APlayerController* GetPlayerController() const;
+
+	void MakeDamage(const FHitResult& HitResult);
 
 public:	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	USkeletalMeshComponent* WeaponMesh;
-
-
 };
