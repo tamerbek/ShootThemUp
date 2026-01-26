@@ -29,10 +29,15 @@ void ASTUBaseWeapon::BeginPlay()
 	
 }
 
-void ASTUBaseWeapon::Fire()
+void ASTUBaseWeapon::StartFire()
 {
-	UE_LOG(BaseWeaponLog, Display, TEXT("Fire!"));
 	MakeShot();
+	GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &ASTUBaseWeapon::MakeShot, TimeBetweenShots, true);
+}
+
+void ASTUBaseWeapon::StopFire()
+{
+	GetWorldTimerManager().ClearTimer(ShotTimerHandle);
 }
 
 void ASTUBaseWeapon::MakeShot()
@@ -46,9 +51,11 @@ void ASTUBaseWeapon::MakeShot()
 	FRotator ViewRotation;
 	Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
 
+	const auto HalfAngleRad = FMath::DegreesToRadians(BulletSpread);
+
 	const FTransform SocketTransform = WeaponMesh->GetSocketTransform(MuzzleSocketName);
 	const FVector TraceStart = ViewLocation; // SocketTransform.GetLocation();
-	const FVector ShootDirection = ViewRotation.Vector();// SocketTransform.GetRotation().GetForwardVector();
+	const FVector ShootDirection = FMath::VRandCone(ViewRotation.Vector(), HalfAngleRad);// SocketTransform.GetRotation().GetForwardVector();
 	const FVector TraceEnd = TraceStart + ShootDirection * ShootTraceMaxDistance;
 
 	FCollisionQueryParams CollisionParams;

@@ -39,8 +39,14 @@ void USTUWeaponComponent::SpawnWeapon()
 	}
 }
 
-void USTUWeaponComponent::WeaponFire()
+void USTUWeaponComponent::StartFire()
 {
 	if(!CurrentWeapon) return;
-	CurrentWeapon->Fire();
+	CurrentWeapon->StartFire();
+}
+
+void USTUWeaponComponent::StopFire()
+{
+	if (!CurrentWeapon) return;
+	CurrentWeapon->StopFire();
 }
