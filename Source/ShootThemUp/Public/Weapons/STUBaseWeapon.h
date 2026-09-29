@@ -28,18 +28,14 @@ protected:
 	FName MuzzleSocketName = "Muzzle";
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float ShootTraceMaxDistance = 10000.0f;
+	float TraceMaxDistance = 10000.0f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	float DamageAmount = 10.0f;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float TimeBetweenShots = 0.1f;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float BulletSpread = 1.5f;
-
-	void MakeShot();
+	virtual void MakeShot();
+	bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
+	virtual bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
 
 	APlayerController* GetPlayerController() const;
 
@@ -50,7 +46,4 @@ protected:
 public:	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	USkeletalMeshComponent* WeaponMesh;
-
-private:
-	FTimerHandle ShotTimerHandle;
 };
