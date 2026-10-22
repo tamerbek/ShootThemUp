@@ -36,6 +36,7 @@ protected:
 	virtual void MakeShot();
 	bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
 	virtual bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
+	FVector GetMuzzleWorldLocation() const;
 
 	APlayerController* GetPlayerController() const;
 
