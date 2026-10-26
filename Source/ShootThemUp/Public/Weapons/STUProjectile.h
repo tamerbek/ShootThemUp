@@ -7,6 +7,7 @@
 #include "STUProjectile.generated.h"
 
 class USphereComponent;
+class UProjectileMovementComponent;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUProjectile : public AActor
@@ -17,6 +18,9 @@ public:
 	// Sets default values for this actor's properties
 	ASTUProjectile();
 
+	void SetShotDirection(const FVector& Direction) { ShotDirection = Direction; }
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -24,7 +28,27 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Weapon")
 	USphereComponent* CollisionComponent;
 
+	UPROPERTY(VisibleDefaultsOnly, Category = "Weapon")
+	UProjectileMovementComponent* MovementComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	float DamageRadius = 200.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	float Damage = 50.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	bool DoFullDamage = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	float LifeSeconds = 5.0f;
 public:	
 	
+private:
+	FVector ShotDirection;
 
+	UFUNCTION()
+	void OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	AController* GetController() const;
 };

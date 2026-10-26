@@ -34,6 +34,7 @@ protected:
 	float DamageAmount = 10.0f;
 
 	virtual void MakeShot();
+	virtual void MakeHit(FHitResult HitResult, FVector TraceStart, FVector TraceEnd);
 	bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
 	virtual bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
 	FVector GetMuzzleWorldLocation() const;
