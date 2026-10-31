@@ -26,6 +26,8 @@ ASTUBaseWeapon::ASTUBaseWeapon()
 void ASTUBaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+	check(WeaponMesh);
+	CurrentAmmo = DefaultAmmo;
 	
 }
 
@@ -95,4 +97,39 @@ bool ASTUBaseWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const
 FVector ASTUBaseWeapon::GetMuzzleWorldLocation() const
 {
 	return WeaponMesh->GetSocketLocation(MuzzleSocketName);
+}
+
+void ASTUBaseWeapon::DecreaseAmmo() 
+{
+	CurrentAmmo.Bullets--;
+	LogAmmo();
+
+	if (IsClipEmpty() && !IsAmmoEmpty())
+	{
+		ChangeClip();
+	}
+}
+bool ASTUBaseWeapon::IsAmmoEmpty() const 
+{
+	return !CurrentAmmo.Infinite && CurrentAmmo.Clips == 0 && IsClipEmpty();
+}
+
+bool ASTUBaseWeapon::IsClipEmpty() const 
+{
+	return CurrentAmmo.Bullets == 0;
+}
+void ASTUBaseWeapon::ChangeClip()
+{
+	CurrentAmmo.Bullets = DefaultAmmo.Bullets;
+	if (!CurrentAmmo.Infinite)
+	{
+		CurrentAmmo.Clips--;
+	}
+	UE_LOG(BaseWeaponLog, Display, TEXT("----Change CLip----"));
+}
+void ASTUBaseWeapon::LogAmmo() 
+{
+	FString AmmoInfo = "Ammo: " + FString::FromInt(CurrentAmmo.Bullets) + "/";
+	AmmoInfo += CurrentAmmo.Infinite ? "Infinite" : FString::FromInt(CurrentAmmo.Clips);
+	UE_LOG(BaseWeaponLog, Display, TEXT("%s"), *AmmoInfo);
 }

@@ -8,6 +8,20 @@
 
 class USkeletalMeshComponent;
 
+USTRUCT(BlueprintType)
+struct FAmmoData
+{
+	GENERATED_USTRUCT_BODY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, category = "Weapon")
+	int32 Bullets;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, category = "Weapon", meta = (EditCondition = "!Infinite"))
+	int32 Clips;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, category = "Weapon")
+	bool Infinite;
+};
+
 UCLASS()
 class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
 {
@@ -24,14 +38,20 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	USkeletalMeshComponent* WeaponMesh;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FName MuzzleSocketName = "Muzzle";
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float TraceMaxDistance = 10000.0f;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float DamageAmount = 10.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FAmmoData DefaultAmmo{ 15, 10, true };
 
 	virtual void MakeShot();
 	virtual void MakeHit(FHitResult HitResult, FVector TraceStart, FVector TraceEnd);
@@ -43,9 +63,14 @@ protected:
 
 	void MakeDamage(const FHitResult& HitResult);
 
-	
+	void DecreaseAmmo();
+	bool IsAmmoEmpty() const;
+	bool IsClipEmpty() const;
+	void ChangeClip();
+	void LogAmmo();
 
-public:	
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-	USkeletalMeshComponent* WeaponMesh;
+
+private:
+	FAmmoData CurrentAmmo;
+
 };

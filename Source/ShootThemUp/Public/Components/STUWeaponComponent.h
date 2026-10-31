@@ -8,6 +8,13 @@
 
 class ASTUBaseWeapon;
 
+USTRUCT(BlueprintType)
+{
+	GENERATED_USTRUCT_BODY()
+
+
+}
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent
 {
