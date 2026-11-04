@@ -27,7 +27,12 @@ ASTUBaseWeapon::ASTUBaseWeapon()
 void ASTUBaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+
 	check(WeaponMesh);
+	checkf(DefaultAmmo.Bullets > 0, TEXT("Bullets count below zero"));
+	checkf(DefaultAmmo.Clips > 0, TEXT("Clips count below zero"));
+
+
 	CurrentAmmo = DefaultAmmo;
 	
 }
