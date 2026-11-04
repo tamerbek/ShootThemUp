@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
 #include "Engine/DamageEvents.h"
+#include "STUWeaponComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseWeaponLog, All, All);
 
@@ -101,12 +102,18 @@ FVector ASTUBaseWeapon::GetMuzzleWorldLocation() const
 
 void ASTUBaseWeapon::DecreaseAmmo() 
 {
+	if (CurrentAmmo.Bullets == 0)
+	{
+		UE_LOG(BaseWeaponLog, Display, TEXT("----No more bullets----"));
+		return;
+	}
 	CurrentAmmo.Bullets--;
 	LogAmmo();
 
 	if (IsClipEmpty() && !IsAmmoEmpty())
 	{
-		ChangeClip();
+		StopFire();
+		OnClipEmpty.Broadcast();
 	}
 }
 bool ASTUBaseWeapon::IsAmmoEmpty() const 
@@ -118,13 +125,20 @@ bool ASTUBaseWeapon::IsClipEmpty() const
 {
 	return CurrentAmmo.Bullets == 0;
 }
+
 void ASTUBaseWeapon::ChangeClip()
 {
 	CurrentAmmo.Bullets = DefaultAmmo.Bullets;
 	if (!CurrentAmmo.Infinite)
 	{
+		if (CurrentAmmo.Clips == 0)
+		{
+			UE_LOG(BaseWeaponLog, Display, TEXT("----No more clips----"));
+			return;
+		}
 		CurrentAmmo.Clips--;
 	}
+	CurrentAmmo.Bullets = DefaultAmmo.Bullets;
 	UE_LOG(BaseWeaponLog, Display, TEXT("----Change CLip----"));
 }
 void ASTUBaseWeapon::LogAmmo() 
@@ -132,4 +146,9 @@ void ASTUBaseWeapon::LogAmmo()
 	FString AmmoInfo = "Ammo: " + FString::FromInt(CurrentAmmo.Bullets) + "/";
 	AmmoInfo += CurrentAmmo.Infinite ? "Infinite" : FString::FromInt(CurrentAmmo.Clips);
 	UE_LOG(BaseWeaponLog, Display, TEXT("%s"), *AmmoInfo);
+}
+
+bool ASTUBaseWeapon::CanReload() const
+{
+	return CurrentAmmo.Bullets < DefaultAmmo.Bullets && CurrentAmmo.Clips > 0;
 }
