@@ -13,8 +13,8 @@ UCLASS()
 class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ASTUBaseWeapon();
 
@@ -26,6 +26,8 @@ public:
 	void ChangeClip();
 	bool CanReload() const;
 
+	FWeaponUIData GetUIData() const { return UIData; };
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -33,17 +35,20 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	USkeletalMeshComponent* WeaponMesh;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	FName MuzzleSocketName = "Muzzle";
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	float TraceMaxDistance = 10000.0f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	float DamageAmount = 10.0f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	FAmmoData DefaultAmmo{ 15, 10, true };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+	FWeaponUIData UIData;
 
 	virtual void MakeShot();
 	virtual void MakeHit(FHitResult HitResult, FVector TraceStart, FVector TraceEnd);
